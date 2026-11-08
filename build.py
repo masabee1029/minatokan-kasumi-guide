@@ -67,6 +67,7 @@ ol.steps{counter-reset:s;list-style:none;margin:14px 0;padding:0}ol.steps li{cou
 ol.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:35px;height:35px;border-radius:50%;background:var(--sun);color:#fff;text-align:center;font:600 18px/35px Fraunces,Georgia,serif}
 pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;font:15px/1.6 ui-monospace,Menlo,monospace}
 .small{font-size:14.5px;color:var(--soft)}
+.ainote{margin:0;padding:7px 16px;background:var(--tint);color:var(--ink);font-size:14.5px;line-height:1.45;text-align:center}
 .closing{margin:44px 0 0;border-left:4px solid var(--sun2);padding:4px 0 4px 16px;font-size:18px}.closing p{margin:0}
 footer{margin-top:56px;border-top:1px solid var(--line);padding:24px 0 12px;font-size:14.5px;color:var(--soft)}footer a{color:var(--soft)}
 .sticky{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-top:1px solid var(--line);padding:10px 16px}
@@ -442,9 +443,10 @@ def page(fn, title, desc, head, sub, body):
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EHWF25C1RB"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-EHWF25C1RB');</script>
 {jsonld(fn, title, desc)}<style>{CSS}</style></head><body>
 <header class="top"><div class="bar"><a class="brand" href="index.html">Minatokan<small>Unofficial guide</small></a>{book("Book direct")}</div><nav class="menu" aria-label="Pages">{nav}</nav></header>
+<p class="ainote">This site uses AI-generated images. <span lang="ja">このサイトはAI画像を使用しています。</span></p>
 <main>{ph}{body}</main>
 <footer><div class="wrap"><p><b>Unofficial guide.</b> Not affiliated with Minatokan. Bookings and questions go directly to the ryokan: <a data-go="contact" href="mailto:{MAIL}">email</a>, <a data-go="tel" href="tel:+81796363330">{TEL}</a>.</p>
-<p>Minatokan, 906 Kasumi-ku Sakai, Kami-cho, Mikata-gun, Hyogo 669-6541, Japan. Facts checked {CHECKED}. Drafted with AI assistance. <a href="about.html">About this guide</a></p></div></footer>
+<p>Minatokan, 906 Kasumi-ku Sakai, Kami-cho, Mikata-gun, Hyogo 669-6541, Japan. Facts checked {CHECKED}. Drafted with AI assistance. This site uses AI-generated images. <span lang="ja">このサイトはAI画像を使用しています。</span> <a href="about.html">About this guide</a></p></div></footer>
 <div class="sticky"><span>Direct with the ryokan, 10 rooms only</span>{book("See rooms &amp; rates")}</div>
 {FX}</body></html>"""
 
