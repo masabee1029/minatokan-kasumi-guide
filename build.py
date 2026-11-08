@@ -7,6 +7,9 @@ OUT = os.path.join(ROOT, "docs")
 BASE = "https://masabee1029.github.io/minatokan-kasumi-guide/"
 BOOK = "https://www.jhpds.net/minatokan/uw/uwp3100/uww3101.do?yadNo=317522"
 CHECKED = "November 8, 2026"
+# A8.net text link for site 009, landing on Minatokan's plan list on Jalan. Do not edit the tracking values.
+JALAN = "https://px.a8.net/svt/ejp?a8mat=4BENDR+18NPBM+14CS+BW8O2&amp;a8ejpredirect=https%3A%2F%2Fwww.jalan.net%2Fyad317522%2Fplan%2F"
+JALAN_BEACON = "https://www13.a8.net/0.gif?a8mat=4BENDR+18NPBM+14CS+BW8O2"
 # Entity-encoded, same as the ryokan's own site does, to limit address harvesting.
 MAIL = "&#105;&#110;&#102;&#111;&#64;&#109;&#105;&#110;&#97;&#116;&#111;&#107;&#97;&#110;&#46;&#106;&#112;"
 TEL = "+81-796-36-3330"
@@ -91,10 +94,14 @@ def book(label="See rooms &amp; rates", cls="btn"):
     return f'<a class="{cls}" data-go="booking" href="{BOOK}" target="_blank" rel="noopener">{label}</a>'
 
 
+def jalan(label="See rooms &amp; rates", cls="btn"):
+    return f'<a class="{cls}" data-go="jalan" href="{JALAN}" target="_blank" rel="nofollow sponsored noopener">{label}</a>'
+
+
 def ctaband(title="Your dates, straight from the ryokan"):
     return f"""<section class="ctaband fx"><h2>{title}</h2>
-<p>Every booking on this guide goes to Minatokan's own reservation site, so you see its current plans and prices. The pages are in Japanese, and <a href="how-to-book.html">this walkthrough</a> explains each step in English.</p>
-{book()} <a class="btn ghost" data-go="contact" href="mailto:{MAIL}">Email the ryokan</a> <a class="btn ghost" data-go="tel" href="tel:+81796363330">Call {TEL}</a></section>"""
+<p>You can book on Jalan, Japan's big travel site, or directly on Minatokan's own reservation site. Both are in Japanese, and <a href="how-to-book.html">this walkthrough</a> explains each screen in English.</p>
+{jalan()} {book("Book direct", "btn ghost")} <a class="btn ghost" data-go="contact" href="mailto:{MAIL}">Email the ryokan</a> <a class="btn ghost" data-go="tel" href="tel:+81796363330">Call {TEL}</a></section>"""
 
 
 def closing(step, question):
@@ -128,7 +135,7 @@ HOME = f"""<section class="hero"><img src="img/hero.jpg" alt="AI-generated image
 <div class="eyebrow">10-room onsen ryokan · Kasumi, Hyogo</div>
 <h1>Your sunset over the Sea of Japan, then a table full of crab</h1>
 <p class="lead">Minatokan (三七十館) sits on the Kasumi coast, about 30 minutes by limited express beyond Kinosaki Onsen. You get an onsen bath facing the sea, seafood from the local port and a small house with only 10 rooms.</p>
-{book()}<span class="note">Opens the ryokan's own booking site, in Japanese. <a href="how-to-book.html" style="color:#ffe0b0">English walkthrough</a>. Background is an AI-generated image.</span>
+{jalan()}<span class="note">Opens Minatokan's page on Jalan, in Japanese. <a href="how-to-book.html#jalan" style="color:#ffe0b0">English walkthrough</a>. You can also <a data-go="booking" href="{BOOK}" target="_blank" rel="noopener" style="color:#ffe0b0">book on the ryokan's own site</a>. Background is an AI-generated image.</span>
 </div></section>
 {STATS}
 <div class="wrap">
@@ -283,7 +290,7 @@ NEARBY = """<div class="wrap">
 
 FAQS = [
  ("Booking and payment", [
-  ("Where do I book?", "All reservations on this guide go to Minatokan's own booking site. The site is in Japanese, and our How to Book page translates each step."),
+  ("Where do I book?", "You can book on Jalan, Japan's big travel site, or on Minatokan's own booking site. Both are in Japanese, and our How to Book page explains each screen in English."),
   ("How late can I book?", "The plan we checked accepted reservations until 17:00 on the day of the stay. Limits can differ by plan."),
   ("What if my date is full?", "The ryokan accepts waiting-list requests by phone or email."),
   ("Which payment methods work?", "Cash or card. Jalan lists JCB, Visa, Mastercard, American Express, Diners and debit cards at the ryokan, and its FAQ also mentions PayPay. An older English page says only Visa and Mastercard, so carrying some cash is a sensible backup. Online card payment at booking is offered on some plans."),
@@ -343,8 +350,32 @@ FAQ = f"""<div class="wrap">
 </div>"""
 
 BOOKING = f"""<div class="wrap">
-<h2 class="fx">Your booking in 5 steps</h2>
-<p class="fx">The reservation pages are in Japanese. Your browser's translate button helps a lot, and this page tells you what each part means.</p>
+<section class="know fx" style="margin-top:26px"><h3>Two places to book</h3><p>Jalan and Minatokan's own site are both in Japanese, and we did not find English booking pages on either one. Plans and prices can differ between them, so comparing both is worthwhile. Your browser's translate button helps you read each screen.</p></section>
+<h2 id="jalan" class="fx">Booking on Jalan, screen by screen</h2>
+<ol class="steps fx">
+<li><b>Open Minatokan's plans.</b> {jalan("Open the plan list on Jalan", "btn ghost")}</li>
+<li><b>Choose your date.</b> Click a date on the calendar. <b>日付未定</b> means no date is set yet, and <b>再検索</b> means search again.</li>
+<li><b>Compare the plans.</b> <b>大人1名(税込)</b> is the price per adult, and <b>合計(税込)</b> is the total for your group, both with tax. <b>※バスなしトイレなし</b> means the room has no bath or toilet. <b>あと1部屋</b> means one room is left.</li>
+<li><b>Open a room.</b> Click the room name, read <b>キャンセル規定</b> (cancellation policy), then press the blue <b>予約へ進む</b> (go to booking) button.</li>
+<li><b>Choose how to continue.</b> <b>ログインして予約へ</b> logs in with a Recruit ID, <b>新規会員登録して予約へ</b> creates a free account, and <b>会員登録せず予約へ</b> lets you book without an account.</li>
+<li><b>Confirm your email.</b> Without an account, type your email address and press <b>上記に同意の上、次へ</b> (agree and continue). Jalan emails you a <b>確認キー</b> (confirmation key). If you filter your mail, allow messages from jalan.net.</li>
+<li><b>Finish the booking.</b> The bar at the top shows your progress: <b>予約内容の入力</b> (your details), <b>予約前の最終確認</b> (final check) and <b>予約完了</b> (done). Jalan says your name and address are required.</li>
+</ol>
+<section class="know fx"><h3>If you book without a Jalan account</h3><ul>
+<li>You can cancel the reservation, but you cannot change it.</li>
+<li>Online card payment is not available, except Apple Pay.</li>
+<li>Paying at the ryokan cannot be chosen for dates more than 3 months ahead. Apple Pay can.</li>
+<li>Points and Jalan coupons are not available.</li>
+</ul></section>
+<p class="small fx">Checked {CHECKED}, up to the email step. We did not enter personal details, so the final form is not described here. To look up or cancel a reservation, use <b>予約照会・変更・キャンセル</b> at the top of any Jalan page. The ryokan's own cancellation rules apply.</p>
+<h2 class="fx">Words you will see on Jalan</h2>
+""" + table(["Japanese", "Meaning"], [
+    ["予約へ進む", "Go to booking"], ["ログインして予約へ", "Log in and book"], ["新規会員登録して予約へ", "Create a free account and book"], ["会員登録せず予約へ", "Book without an account"],
+    ["メールアドレス（半角英数）", "Email address, in standard letters and numbers"], ["上記に同意の上、次へ", "Agree to the above and continue"], ["確認キー", "Confirmation key sent by email"],
+    ["現地決済", "Pay at the ryokan"], ["Apple Pay決済", "Pay with Apple Pay"], ["オンラインカード決済", "Pay online by card"], ["予約照会・変更・キャンセル", "Look up, change or cancel a reservation"],
+]) + f"""
+<h2 class="fx">Booking on Minatokan's own site in 5 steps</h2>
+<p class="fx">These steps are for the ryokan's own reservation pages.</p>
 <ol class="steps fx">
 <li><b>Open the plan list.</b> {book("Open Minatokan's booking site", "btn ghost")}</li>
 <li><b>Enter your stay.</b> Set the date, nights, rooms and guests, then press <b>再検索</b> (search again).</li>
@@ -390,14 +421,15 @@ ABOUT = f"""<div class="wrap">
 <h2 class="fx">Thank you for being here</h2>
 <p class="fx">We appreciate your interest in Kasumi. This guide exists so that travelers who read English can discover a small ryokan on the Sea of Japan and feel confident booking it.</p>
 <h2 class="fx">This is an unofficial guide</h2>
-<p class="fx">This site is independent. It is not run by, endorsed by or affiliated with Minatokan. All reservations and questions about your stay go directly to the ryokan, which is the only source for current plans, prices and rules.</p>
+<p class="fx">This site is independent. It is not run by, endorsed by or affiliated with Minatokan or Jalan. Reservations are made on Jalan or on the ryokan's own site, and questions about your stay go directly to the ryokan.</p>
+<h2 class="fx">Affiliate ads</h2>
+<p class="fx">Links labeled "See rooms &amp; rates" and other links to Jalan are affiliate ads through A8.net. This site earns a commission when a stay booked through one of those links is completed. Links labeled "Book direct" go to the ryokan's own site and earn this site nothing.</p>
 <h2 class="fx">How it is made</h2>
 <ul class="fx">
 <li>Text was drafted with AI assistance, using the public sources below.</li>
 <li>Facts are rewritten in our own words. Guest reviews and the ryokan's photos are not copied here.</li>
 <li>Nothing on this site describes a personal stay.</li>
 <li>Every image was created with generative AI (Google Gemini) from written descriptions, and each one is labeled. They suggest the mood only, and do not show the real ryokan, rooms, food or view. <a href="https://www.jalan.net/yad317522/photo/" target="_blank" rel="noopener">Real photos are on Jalan</a>.</li>
-<li>This site has no ads and earns nothing from your booking.</li>
 <li>Sunset times are calculated estimates.</li>
 </ul>
 <p class="fx">The Jalan rating and all prices were read on {CHECKED} and can change.</p>
@@ -416,8 +448,8 @@ PAGES = {
  "getting-there.html": ("How to Get to Kasumi from Osaka, Kyoto and Kinosaki Onsen", "Train times to JR Kasumi Station from Osaka, Kyoto, Kobe and Kinosaki Onsen, Minatokan's free pickup, airports, driving and winter travel.", "Getting to Kasumi", "Trains, the free station pickup, and what to expect in snow.", ACCESS),
  "nearby.html": ("Things to Do Near Kasumi: Amarube Bridge, Kinosaki, San'in Geopark", "Places near Minatokan in Kasumi with driving times, including Amarube Bridge, Kinosaki Onsen, Tottori Sand Dunes and the San'in Kaigan Geopark.", "Around Kasumi", "Sights within an hour, with driving times from the ryokan.", NEARBY),
  "faq.html": ("Minatokan Kasumi FAQ in English: Rooms, Payment, Pickup, Children", "English answers to common questions about staying at Minatokan: booking, payment, cancellation, baths, meals, children and access.", "Frequently asked questions", "The ryokan's common questions, in plain English.", FAQ),
- "how-to-book.html": ("How to Book Minatokan Ryokan in English: Step-by-Step Guide", "An English walkthrough of Minatokan's Japanese booking site, with a glossary, cancellation fees and an email sample for the ryokan.", "How to book Minatokan", "An English map of a Japanese reservation page.", BOOKING),
- "about.html": ("About This Unofficial Minatokan Guide", "About this independent English guide to Minatokan in Kasumi: who it is for, how it is made and its sources.", "About this guide", "Independent, ad-free, and clear about its sources.", ABOUT),
+ "how-to-book.html": ("How to Book Minatokan Ryokan in English: Step-by-Step Guide", "An English walkthrough of booking Minatokan on Jalan and on the ryokan's own Japanese site, with a glossary, cancellation fees and an email sample.", "How to book Minatokan", "An English map of the Japanese booking pages.", BOOKING),
+ "about.html": ("About This Unofficial Minatokan Guide", "About this independent English guide to Minatokan in Kasumi: who it is for, how it is made and its sources.", "About this guide", "Independent, and clear about its ads and its sources.", ABOUT),
 }
 
 
@@ -443,12 +475,12 @@ def page(fn, title, desc, head, sub, body):
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EHWF25C1RB"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-EHWF25C1RB');</script>
 {jsonld(fn, title, desc)}<style>{CSS}</style></head><body>
 <header class="top"><div class="bar"><a class="brand" href="index.html">Minatokan<small>Unofficial guide</small></a>{book("Book direct")}</div><nav class="menu" aria-label="Pages">{nav}</nav></header>
-<p class="ainote">This site uses AI-generated images. <span lang="ja">このサイトはAI画像を使用しています。</span></p>
+<p class="ainote">This site uses AI-generated images. <span lang="ja">このサイトはAI画像を使用しています。</span><br>#AffiliateAd This site contains affiliate ads (PR). <span lang="ja">#アフィリエイト広告 このサイトには広告（PR）が含まれます。</span></p>
 <main>{ph}{body}</main>
-<footer><div class="wrap"><p><b>Unofficial guide.</b> Not affiliated with Minatokan. Bookings and questions go directly to the ryokan: <a data-go="contact" href="mailto:{MAIL}">email</a>, <a data-go="tel" href="tel:+81796363330">{TEL}</a>.</p>
+<footer><div class="wrap"><p><b>Unofficial guide.</b> Not affiliated with Minatokan. Contains affiliate ads (PR). Questions go directly to the ryokan: <a data-go="contact" href="mailto:{MAIL}">email</a>, <a data-go="tel" href="tel:+81796363330">{TEL}</a>.</p>
 <p>Minatokan, 906 Kasumi-ku Sakai, Kami-cho, Mikata-gun, Hyogo 669-6541, Japan. Facts checked {CHECKED}. Drafted with AI assistance. This site uses AI-generated images. <span lang="ja">このサイトはAI画像を使用しています。</span> <a href="about.html">About this guide</a></p></div></footer>
-<div class="sticky"><span>Direct with the ryokan, 10 rooms only</span>{book("See rooms &amp; rates")}</div>
-{FX}</body></html>"""
+<div class="sticky"><span>Only 10 rooms in the house</span>{jalan()}</div>
+{FX}<img src="{JALAN_BEACON}" width="1" height="1" alt="" style="position:absolute;border:0"></body></html>"""
 
 
 def main():
