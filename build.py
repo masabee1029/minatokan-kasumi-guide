@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Minatokan Kasumi unofficial English guide: static site builder. Output goes to docs/."""
-import json, os, struct, zlib, html as H
+import json, os, html as H
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "docs")
@@ -36,16 +36,13 @@ nav.menu a.on{background:var(--tint);color:var(--ink);font-weight:600}
 .btn:hover{filter:brightness(1.08)}.btn.ghost{background:none;color:var(--sun);box-shadow:inset 0 0 0 1.5px var(--sun)}
 .bar .btn{padding:8px 13px;font-size:14px;flex:none}
 .hero{position:relative;color:#fff8ec;background:#23203f;overflow:hidden}
-.hero svg{position:absolute;inset:0;width:100%;height:100%}
-.hero .in{position:relative;max-width:900px;margin:0 auto;padding:clamp(56px,10vw,104px) 16px clamp(150px,22vw,210px)}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(18,14,38,.86) 0%,rgba(18,14,38,.62) 52%,rgba(18,14,38,.22) 100%)}
+.hero .in{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:clamp(56px,10vw,104px) 16px clamp(92px,14vw,130px)}
 .eyebrow{font-size:14px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;margin-bottom:12px}
 .hero h1{font-size:clamp(36px,6.4vw,62px);margin:0 0 16px;max-width:17em}
 .hero p.lead{font-size:clamp(18px,2.4vw,21px);max-width:34em;margin-bottom:22px}
 .hero .btn{background:#fff3df;color:#8c2a0d}.hero .note{display:block;font-size:13.5px;margin-top:10px;opacity:.9}
-@media (max-width:640px){.hero .in{padding-bottom:265px}#sun{animation-name:sinks!important}}
-@keyframes sinks{from{transform:translateY(-36px)}to{transform:translateY(0)}}
-#sun{animation:sink 16s cubic-bezier(.3,.1,.4,1) both}
-@keyframes sink{from{transform:translateY(-120px)}to{transform:translateY(0)}}
+figure.ph{margin:20px 0}figure.ph img{display:block;width:100%;height:auto;border-radius:12px}figure.ph figcaption{font-size:14px;color:var(--soft);margin-top:7px;line-height:1.45}
 .pagehead{background:linear-gradient(170deg,#2b2750 0%,#a43e2e 72%,#e8a24a 130%);color:#fff8ec;padding:clamp(40px,7vw,66px) 0 clamp(34px,6vw,56px)}
 .pagehead h1{font-size:clamp(32px,5.4vw,50px);margin:0 0 10px}.pagehead p{font-size:19px;margin:0;max-width:36em}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:-44px 0 0;position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px}
@@ -77,7 +74,7 @@ footer{margin-top:56px;border-top:1px solid var(--line);padding:24px 0 12px;font
 .fxjs .fx{opacity:0;transform:translate3d(-14px,20px,0);clip-path:inset(0 0 26% 0);transition:opacity .75s ease,transform .75s ease,clip-path .85s ease}
 .fxjs .fx.on{opacity:1;transform:none;clip-path:inset(-20px)}
 .fxjs .fx.done{opacity:1;transform:none;clip-path:none;transition:none}
-@media (prefers-reduced-motion:reduce){#sun{animation:none}.fxjs .fx{opacity:1;transform:none;clip-path:none;transition:none}}
+@media (prefers-reduced-motion:reduce){.fxjs .fx{opacity:1;transform:none;clip-path:none;transition:none}}
 """
 
 FX = """<script>(function(){var d=document.documentElement;d.classList.add('fxjs');
@@ -110,17 +107,6 @@ def table(head, rows):
     return f'<div class="tw fx"><table{cls}><thead><tr>{h}</tr></thead><tbody>{b}</tbody></table></div>'
 
 
-HERO_SVG = """<svg viewBox="0 0 1200 620" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#231f47"/><stop offset=".45" stop-color="#7c2f45"/><stop offset=".72" stop-color="#d9581f"/><stop offset=".84" stop-color="#f4b25c"/></linearGradient>
-<linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b65a35"/><stop offset=".35" stop-color="#3b3350"/><stop offset="1" stop-color="#101a30"/></linearGradient>
-<clipPath id="above"><rect width="1200" height="520"/></clipPath></defs>
-<rect width="1200" height="620" fill="url(#sky)"/>
-<g clip-path="url(#above)"><circle id="sun" cx="760" cy="502" r="62" fill="#ffe2a8"/></g>
-<rect y="520" width="1200" height="100" fill="url(#sea)"/>
-<g fill="#ffd79a" opacity=".75"><rect x="690" y="527" width="140" height="3" rx="1.5"/><rect x="712" y="540" width="96" height="3" rx="1.5"/><rect x="668" y="554" width="176" height="3" rx="1.5"/><rect x="724" y="570" width="72" height="3" rx="1.5"/><rect x="700" y="588" width="118" height="3" rx="1.5"/></g>
-<path d="M0 520V438c60-14 106-44 172-40 54 4 80 34 138 50 62 18 128 18 204 72z" fill="#141a2e"/>
-<g fill="#ffe9bb"><circle cx="1010" cy="516" r="2.4"/><circle cx="1072" cy="513" r="2"/><circle cx="1128" cy="517" r="2.4"/></g></svg>"""
-
 STATS = """<div class="wrap"><section class="stats fx" aria-label="Minatokan at a glance">
 <div><b>10</b><span>guest rooms in the whole ryokan</span></div>
 <div><b>3</b><span>rooms with a private sea-view bath</span></div>
@@ -128,11 +114,20 @@ STATS = """<div class="wrap"><section class="stats fx" aria-label="Minatokan at 
 <div><b>Free</b><span>pickup from JR Kasumi Station, about 10 minutes away</span></div>
 </section></div>"""
 
-HOME = HERO_SVG and f"""<section class="hero">{HERO_SVG}<div class="in">
+PHOTOS = "https://www.jalan.net/yad317522/photo/"
+
+
+def fig(name, alt, what="the view"):
+    return (f'<figure class="ph fx"><img src="img/{name}.jpg" alt="AI-generated image of {alt}" width="1024" height="572" loading="lazy">'
+            f'<figcaption>AI-generated image to suggest {what}. It is not a photo of Minatokan. '
+            f'<a href="{PHOTOS}" target="_blank" rel="noopener">See real photos on Jalan</a></figcaption></figure>')
+
+
+HOME = f"""<section class="hero"><img src="img/hero.jpg" alt="AI-generated image of a sunset over the Sea of Japan from a pine-covered headland" width="1024" height="572"><div class="in">
 <div class="eyebrow">10-room onsen ryokan · Kasumi, Hyogo</div>
 <h1>Your sunset over the Sea of Japan, then a table full of crab</h1>
 <p class="lead">Minatokan (三七十館) sits on the Kasumi coast, about 30 minutes by limited express beyond Kinosaki Onsen. You get an onsen bath facing the sea, seafood from the local port and a small house with only 10 rooms.</p>
-{book()}<span class="note">Opens the ryokan's own booking site, in Japanese. <a href="how-to-book.html" style="color:#ffe0b0">English walkthrough</a></span>
+{book()}<span class="note">Opens the ryokan's own booking site, in Japanese. <a href="how-to-book.html" style="color:#ffe0b0">English walkthrough</a>. Background is an AI-generated image.</span>
 </div></section>
 {STATS}
 <div class="wrap">
@@ -142,6 +137,7 @@ HOME = HERO_SVG and f"""<section class="hero">{HERO_SVG}<div class="in">
 <article class="card fx"><h3>Crab for most of the year</h3><p>Kasumi's red snow crab season opens in September, and prized Matsuba crab follows on November 6.</p><a class="more" href="crab.html">Which crab, which month</a></article>
 <article class="card fx"><h3>Run by seafood people</h3><p>Minatokan grew out of Minatozushi, a local sushi bar. Its Jalan page cites a 2025 award: first in sales among inns of 10 rooms or fewer in Kinki-Hokuriku.</p><a class="more" href="rooms-baths.html">Rooms and baths</a></article>
 </div>
+<div class="grid2">{fig("bath", "a round ceramic tub by a window facing the sea at dusk", "a private sea-view bath")}{fig("crab", "a crab dinner on a low wooden table in a tatami room", "a crab dinner")}</div>
 <section class="know fx"><h3>Worth knowing before you choose</h3><ul>
 <li>Standard rooms have no private bath or toilet. If an en-suite matters to you, the 3 sea-view bath rooms are the ones to look for.</li>
 <li>All rooms are tatami, with low tables at about 35 cm. Low chairs are available if you ask.</li>
@@ -171,7 +167,7 @@ def plan_note(t):
 
 
 SUNSET = """<div class="wrap">
-<h2 class="fx">Where the name comes from</h2>
+""" + fig("sunset", "a sunset over the Sea of Japan from a pine-covered headland", "a Sea of Japan sunset") + """<h2 class="fx">Where the name comes from</h2>
 <p class="fx">The ryokan's full name in Japanese means "the onsen inn of Japan's 100 sunset spots," and its English site calls the area "Japan's 100 Most Beautiful Sunset." Local tourism listings connect the title to this stretch of coast, naming Imagoura and Okami Park among the viewpoints.</p>
 <h2 class="fx">Sunset time in Kasumi, month by month</h2>
 <p class="fx">Dinner at Minatokan starts from 18:00, and the ryokan asks your preferred time. Use the table to choose between watching from the bath and watching before your meal.</p>
@@ -189,6 +185,7 @@ SUNSET = """<div class="wrap">
 CRAB = """<div class="wrap">
 <h2 class="fx">Matsuba crab or Kasumi crab?</h2>
 <p class="fx">Kasumi is a real crab town, with two different stars. Your travel month decides which one you can taste.</p>
+""" + fig("crab", "a crab dinner on a low wooden table in a tatami room", "a crab dinner") + """
 """ + table(["", "Matsuba crab", "Kasumi crab (Kasumi-gani)"], [
     ["What it is", "Snow crab from the San'in coast. Matsuba is the regional name", "Red snow crab landed at Kasumi Port"],
     ["Season", "From November 6, through about March", "From September 1, through the end of May"],
@@ -219,14 +216,16 @@ ROOMS = """<div class="wrap">
     ["Sea-side Japanese room", "Sea of Japan", "No. The booking page marks it as having no bath or toilet", "Standard rate"],
     ["Mountain-side Japanese room", "Mountain side", "No. The booking page marks it as having no bath or toilet", "Standard rate"],
 ]) + """
-<p class="fx">All 10 rooms are tatami. The ryokan describes itself as a small wooden house, which keeps the atmosphere quiet and means pets and mahjong are not allowed.</p>
+""" + fig("room", "a tatami room with a low table and a window facing the sea", "a tatami room with a sea view") + """<p class="fx">All 10 rooms are tatami. The ryokan describes itself as a small wooden house, which keeps the atmosphere quiet and means pets and mahjong are not allowed.</p>
 <h2 class="fx">The onsen</h2>
+<div class="grid2">""" + fig("bath", "a round ceramic tub by a window facing the sea at dusk", "a private sea-view bath") + fig("onsen", "an indoor hot spring bath with a wide window facing a sunset", "an indoor bath with a sea view") + """</div>
 <div class="grid2">
 <article class="card fx"><h3>Communal baths</h3><p>One indoor bath each for men and women, with a view of the Sea of Japan. The ryokan calls them modest in size, matched to a 10-room house.</p></article>
 <article class="card fx"><h3>The water</h3><p>Jalan lists the source as Ishii Onsen, with water added, heated and recirculated through filters. There is no sauna and no communal open-air bath.</p></article>
 </div>
 <section class="know fx"><h3>Bath hours</h3><p>The Japanese FAQ (2021) says the communal baths are open 24 hours. The older English page lists 15:00 to 24:00 and 6:00 to 9:30. The front desk can confirm when you check in.</p></section>
 <h2 class="fx">Small comforts</h2>
+""" + fig("yukata", "colorful yukata hanging on a wooden rack", "a choice of colorful yukata") + """
 <div class="grid3">
 <article class="card fx"><h3>Yukata</h3><p>Yukata in your room, and women can choose one more from 30 colorful patterns at no cost. Staff can help you put it on.</p></article>
 <article class="card fx"><h3>In your room</h3><p>Toothbrush, razor for men, hand soap, cotton swabs, hair dryer, towels and an air purifier. A humidifier is free on request while supplies last.</p></article>
@@ -238,7 +237,7 @@ ROOMS = """<div class="wrap">
 ACCESS = """<div class="wrap">
 <h2 class="fx">By train, with a free ride at the end</h2>
 <p class="fx">Your stop is <b>JR Kasumi Station</b> on the San'in Line. Minatokan picks you up there for free and takes you back the next day. The drive is about 10 minutes.</p>
-""" + table(["From", "Approx. time to Kasumi", "Notes"], [
+""" + fig("train", "a small train running beside a green coast and blue sea", "the coastal scenery. The real train may look different") + table(["From", "Approx. time to Kasumi", "Notes"], [
     ["Kinosaki Onsen", "About 30 minutes", "By Limited Express Hamakaze"],
     ["Himeji", "About 2 hours", "By Limited Express Hamakaze"],
     ["Kobe", "About 3 hours", "By Limited Express Hamakaze"],
@@ -276,6 +275,7 @@ NEARBY = """<div class="wrap">
 <h2 class="fx">Amarube Bridge</h2>
 <p class="fx">Amarube Station is about 10 minutes west of Kasumi on the San'in Line local train, since the Hamakaze does not stop there. The old steel trestle was replaced by a concrete bridge in 2010, and part of it now forms the Sora no Eki observation deck, about 40 meters above the ground.</p>
 <h2 class="fx">San'in Kaigan Geopark</h2>
+""" + fig("coast", "rock cliffs and sea stacks on a clear green sea", "the rocky coastline") + """
 <p class="fx">Minatokan stands inside the San'in Kaigan National Park, on a coast recognized as a Geopark. You can read the rock and sea stacks from the sightseeing boat or from the shore.</p>
 <section class="know fx"><h3>Summer at the ryokan</h3><p>In July and August, staying guests have been offered a free marine activity such as rock fishing, plus paid trial diving from ¥12,000 and a charcoal BBQ lunch by the beach. Offers change, so the ryokan can confirm this year's list.</p></section>
 """ + ctaband("Build your Kasumi night into the trip") + closing("A good small step is choosing the one place above you would most like to see.", '<a href="faq.html">Do you have a question the FAQ can answer?</a>') + "</div>"
@@ -395,7 +395,7 @@ ABOUT = f"""<div class="wrap">
 <li>Text was drafted with AI assistance, using the public sources below.</li>
 <li>Facts are rewritten in our own words. Guest reviews and the ryokan's photos are not copied here.</li>
 <li>Nothing on this site describes a personal stay.</li>
-<li>The artwork is a simple illustration, and does not show the real view.</li>
+<li>Every image was created with generative AI (Google Gemini) from written descriptions, and each one is labeled. They suggest the mood only, and do not show the real ryokan, rooms, food or view. <a href="https://www.jalan.net/yad317522/photo/" target="_blank" rel="noopener">Real photos are on Jalan</a>.</li>
 <li>This site has no ads and earns nothing from your booking.</li>
 <li>Sunset times are calculated estimates.</li>
 </ul>
@@ -426,7 +426,7 @@ def jsonld(fn, title, desc):
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for _, qs in FAQS for q, a in qs]}
     else:
         data = {"@context": "https://schema.org", "@type": "Article", "headline": H.unescape(title), "description": desc, "url": BASE + ("" if fn == "index.html" else fn),
-                "about": {"@type": "Thing", "name": "Minatokan ryokan, Kasumi, Hyogo, Japan"}, "dateModified": "2026-11-08", "inLanguage": "en"}
+                "about": {"@type": "Thing", "name": "Minatokan ryokan, Kasumi, Hyogo, Japan"}, "dateModified": "2026-11-09", "inLanguage": "en"}
     return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace("</", "<\\/") + "</script>"
 
 
@@ -436,7 +436,7 @@ def page(fn, title, desc, head, sub, body):
     ph = f'<section class="pagehead"><div class="wrap"><h1>{head}</h1><p>{sub}</p></div></section>' if head else ""
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title><meta name="description" content="{H.escape(desc)}"><link rel="canonical" href="{url}">
-<meta property="og:type" content="website"><meta property="og:title" content="{title}"><meta property="og:description" content="{H.escape(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{BASE}img/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website"><meta property="og:title" content="{title}"><meta property="og:description" content="{H.escape(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{BASE}img/sunset.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23231f47'/%3E%3Ccircle cx='16' cy='20' r='8' fill='%23f4b25c'/%3E%3Crect y='20' width='32' height='12' fill='%23143a55'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EHWF25C1RB"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-EHWF25C1RB');</script>
@@ -449,37 +449,11 @@ def page(fn, title, desc, head, sub, body):
 {FX}</body></html>"""
 
 
-def og_png(path, w=1200, h=630):
-    stops = [(0, (35, 31, 71)), (.45, (124, 47, 69)), (.72, (217, 88, 31)), (.84, (244, 178, 92))]
-    def sky(t):
-        for (a, c1), (b, c2) in zip(stops, stops[1:]):
-            if t <= b:
-                k = (t - a) / (b - a)
-                return tuple(int(c1[i] + (c2[i] - c1[i]) * k) for i in range(3))
-        return stops[-1][1]
-    hz, cx, cy, r, raw = 505, 760, 490, 74, bytearray()
-    for y in range(h):
-        raw.append(0)
-        base = sky(y / hz) if y < hz else (16 + int(90 * max(0, 1 - (y - hz) / 70)), 26 + int(30 * max(0, 1 - (y - hz) / 70)), 48)
-        for x in range(w):
-            c = base
-            if y < hz and (x - cx) ** 2 + (y - cy) ** 2 <= r * r:
-                c = (255, 226, 168)
-            elif y >= hz and abs(x - cx) < 86 - (y - hz) * .4 and (y - hz) % 15 < 3:
-                c = (255, 215, 154)
-            raw.extend(c)
-    def ch(t, d):
-        return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
-    data = b"\x89PNG\r\n\x1a\n" + ch(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)) + ch(b"IDAT", zlib.compress(bytes(raw), 9)) + ch(b"IEND", b"")
-    open(path, "wb").write(data)
-
-
 def main():
     os.makedirs(os.path.join(OUT, "img"), exist_ok=True)
     for fn, (t, d, hd, sb, body) in PAGES.items():
         open(os.path.join(OUT, fn), "w", encoding="utf-8").write(page(fn, t, d, hd, sb, body))
-    og_png(os.path.join(OUT, "img", "og.png"))
-    urls = "".join(f"<url><loc>{BASE}{'' if f == 'index.html' else f}</loc><lastmod>2026-11-08</lastmod></url>" for f in PAGES)
+    urls = "".join(f"<url><loc>{BASE}{'' if f == 'index.html' else f}</loc><lastmod>2026-11-09</lastmod></url>" for f in PAGES)
     open(os.path.join(OUT, "sitemap.xml"), "w").write(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
     open(os.path.join(OUT, ".nojekyll"), "w").close()
     print("built", len(PAGES), "pages")
